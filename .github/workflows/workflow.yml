@@ -37,7 +37,7 @@ jobs:
         id: deploy
         run: |
           aws deploy create-deployment \
-            --application-name application-name \
+            --application-name tweet-streamer \
             --deployment-group-name AppDeploymentGroupName \
             --deployment-config-name CodeDeployDefault.OneAtATime \
             --github-location repository=${{ github.repository }},commitId=${{ github.sha }}
