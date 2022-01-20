@@ -3,7 +3,8 @@ os: linux
 files:
  - source: .
    destination: /home/ec2-user/tweet-streamer
-ApplicationStart:
- - location: /home/ec2-user/tweet-streamer/scripts/start_app
-   timeout: 300
-   runas: root
+hooks:
+  ApplicationStart:
+   - location: /home/ec2-user/tweet-streamer/scripts/start_app
+     timeout: 300
+     runas: root
