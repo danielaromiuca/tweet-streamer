@@ -1,4 +1,5 @@
 #!/bin/bash
 cd /home/ec2-user/tweet-streamer
 pkill -f supervisord
+sleep 20
 /usr/local/bin/supervisord  -c supervisord.conf
