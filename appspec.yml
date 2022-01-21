@@ -6,4 +6,5 @@ files:
 hooks:
    ApplicationStart:
      - location: scripts/start_app
-       timeout: 300  
+       timeout: 300
+       runas: ec2-user
