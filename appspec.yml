@@ -4,7 +4,10 @@ files:
  - source: .
    destination: /home/ec2-user/tweet-streamer
 hooks:
+   ApplicationStop:
+     - location: scripts/stop_app
+       timeout: 300
    ApplicationStart:
      - location: scripts/start_app
        timeout: 300
-       runas: ec2-user
+
