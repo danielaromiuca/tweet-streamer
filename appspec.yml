@@ -6,5 +6,4 @@ files:
 hooks:
    ApplicationStart:
      - location: scripts/start_app
-       timeout: 300
-       runas: root   
+       timeout: 300  
