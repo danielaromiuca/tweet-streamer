@@ -4,7 +4,7 @@ files:
  - source: .
    destination: /home/ec2-user/tweet-streamer
 hooks:
-   ApplicationStop:
+   AfterInstall:
      - location: scripts/stop_app
        timeout: 300
    ApplicationStart:
