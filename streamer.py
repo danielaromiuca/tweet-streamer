@@ -2,17 +2,16 @@
 import json
 import logging
 import time
-from secrets import (
-    API_ACCESS_TOKEN,
-    API_ACCESS_TOKEN_SECRET,
-    API_CONSUMER_KEY,
-    API_CONSUMER_SECRET,
-)
+from secrets import (API_ACCESS_TOKEN, API_ACCESS_TOKEN_SECRET,
+                     API_CONSUMER_KEY, API_CONSUMER_SECRET)
 
+import boto3
 import pandas as pd
+import StringIO
 from tweepy import Stream
 
 from parameters import countries, tags
+from process_tweet import hash, procesa_texto, procesa_tuit, user_men, web_men
 
 
 def upload_s3(df, fn):
@@ -102,6 +101,7 @@ class Listener(Stream):
 
     def on_error(self, status):
         logger.error(f"Error en la aplicación: {status}")
+        raise Exception('Hubo un error durante el stremeo')
 
 
 if __name__ == "__main__":
