@@ -114,8 +114,8 @@ if __name__ == "__main__":
 
     tuits = []
 
-    auth = OAuthHandler(consumer_key, consumer_secret)
-    auth.set_access_token(access_token, access_token_secret)
+    auth = OAuthHandler(API_CONSUMER_KEY, API_CONSUMER_SECRET)
+    auth.set_access_token(API_ACCESS_TOKEN, API_CONSUMER_SECRET)
 
     l = StdOutListener()
     stream = Stream(auth, l)
