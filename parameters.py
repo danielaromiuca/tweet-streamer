@@ -1,1 +1,4 @@
-###Script to modify parameters to filter and track
+###Parameters to filter and track tweet stream
+
+countries = []
+tags = ["economia", "inflacion"]
