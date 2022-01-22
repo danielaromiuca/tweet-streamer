@@ -100,8 +100,7 @@ class Listener(Stream):
             tuits = []
 
     def on_error(self, status):
-        logger.error(f"Error en la aplicación: {status}")
-        raise Exception('Hubo un error durante el stremeo')
+        raise Exception(f"Hubo un error en la aplicación {status}")
 
 
 if __name__ == "__main__":
