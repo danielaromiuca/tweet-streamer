@@ -2,12 +2,12 @@
 import json
 import logging
 import time
+from io import StringIO
 from secrets import (API_ACCESS_TOKEN, API_ACCESS_TOKEN_SECRET,
                      API_CONSUMER_KEY, API_CONSUMER_SECRET)
 
 import boto3
 import pandas as pd
-import StringIO
 from tweepy import Stream
 
 from parameters import countries, tags
