@@ -2,11 +2,15 @@
 import json
 import logging
 import time
-from secrets import (API_ACCESS_TOKEN, API_ACCESS_TOKEN_SECRET,
-                     API_CONSUMER_KEY, API_CONSUMER_SECRET)
+from secrets import (
+    API_ACCESS_TOKEN,
+    API_ACCESS_TOKEN_SECRET,
+    API_CONSUMER_KEY,
+    API_CONSUMER_SECRET,
+)
 
 import pandas as pd
-from tweepy import OAuthHandler, Stream
+from tweepy import Stream
 
 from parameters import countries, tags
 
@@ -20,7 +24,7 @@ def upload_s3(df, fn):
     s3_resource.Object(bucket, "data/streamed/" + fn).put(Body=csv_buffer.getvalue())
 
 
-class StdOutListener(Stream):
+class Listener(Stream):
     def on_data(self, data):
 
         fields = [""] * 16
@@ -114,9 +118,7 @@ if __name__ == "__main__":
 
     tuits = []
 
-    auth = OAuthHandler(API_CONSUMER_KEY, API_CONSUMER_SECRET)
-    auth.set_access_token(API_ACCESS_TOKEN, API_CONSUMER_SECRET)
-
-    l = StdOutListener()
-    stream = Stream(auth, l)
-    stream.filter(track=tags)
+    twitter_stream = Listener(
+        API_CONSUMER_KEY, API_CONSUMER_SECRET, API_ACCESS_TOKEN, API_ACCESS_TOKEN_SECRET
+    )
+    twitter_stream.filter(track=tags)
