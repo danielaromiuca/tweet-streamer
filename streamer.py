@@ -7,7 +7,6 @@ from secrets import (API_ACCESS_TOKEN, API_ACCESS_TOKEN_SECRET,
 
 import pandas as pd
 from tweepy import OAuthHandler, Stream
-from tweepy.streaming import StreamListener
 
 from parameters import countries, tags
 
@@ -21,7 +20,7 @@ def upload_s3(df, fn):
     s3_resource.Object(bucket, "data/streamed/" + fn).put(Body=csv_buffer.getvalue())
 
 
-class StdOutListener(StreamListener):
+class StdOutListener(Stream):
     def on_data(self, data):
 
         fields = [""] * 16
