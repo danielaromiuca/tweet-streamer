@@ -24,6 +24,7 @@ def upload_s3(df, fn):
 
 
 class Listener(Stream):
+    global tuits
     def on_data(self, data):
 
         fields = [""] * 16
