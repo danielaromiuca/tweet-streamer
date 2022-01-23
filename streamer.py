@@ -3,8 +3,12 @@ import json
 import logging
 import time
 from io import StringIO
-from secrets import (API_ACCESS_TOKEN, API_ACCESS_TOKEN_SECRET,
-                     API_CONSUMER_KEY, API_CONSUMER_SECRET)
+from secrets import (
+    API_ACCESS_TOKEN,
+    API_ACCESS_TOKEN_SECRET,
+    API_CONSUMER_KEY,
+    API_CONSUMER_SECRET,
+)
 
 import boto3
 import pandas as pd
@@ -25,7 +29,7 @@ def upload_s3(df, fn):
 
 class Listener(Stream):
     def on_data(self, data):
-    global tuits
+        global tuits
         fields = [""] * 16
 
         json_map = json.loads(data)
