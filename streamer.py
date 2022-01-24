@@ -19,7 +19,7 @@ def upload_s3(json_tuits):
     day = now.strftime("%d")
     time = now.strftime("%H%M")
 
-    fn = f"{year}/{month}/{day}/{time}.json"
+    fn = f"{year}/{month}/{day}/{time}"
 
     bucket = "twitter-project-daromi"
     s3_resource = boto3.resource("s3")
@@ -37,7 +37,7 @@ class Listener(Stream):
 
         tuits.append(json_map)
 
-        if len(tuits) == 100:
+        if len(tuits) == 1000:
             json_tuits = json.dumps(tuits)
             upload_s3(json_tuits)
             tuits = []
@@ -57,7 +57,7 @@ if __name__ == "__main__":
     logger = logging.getLogger("streamer-process.log")
 
     logger.info(
-        f"Lanzando aplicación streaming. Traking términos: {tags} y países: {countries}"
+        f"Lanzando aplicación streaming. Tracking términos: {tags} y países: {countries}"
     )
 
     tuits = []
