@@ -27,7 +27,7 @@ def upload_s3(json_tuits):
 
     bucket = "twitter-project-daromi"
     s3_resource = boto3.resource("s3")
-    s3_resource.Object(bucket, "data/p.expectativas/streamed/" + fn).put(Body=bytes(json_tuits))
+    s3_resource.Object(bucket, "data/p.expectativas/streamed/" + fn).put(Body=bytes(json_tuits).decode("utf-8"))
     logger.info(f"Tweets Guardados. Nombre del archivo: {fn}")
 
 class Listener(Stream):
