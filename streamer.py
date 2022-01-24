@@ -1,8 +1,7 @@
 ###Process Tweet stream
 import json
 import logging
-import time
-from io import StringIO
+from datetime import datetime
 from secrets import (
     API_ACCESS_TOKEN,
     API_ACCESS_TOKEN_SECRET,
@@ -11,96 +10,38 @@ from secrets import (
 )
 
 import boto3
-import pandas as pd
 from tweepy import Stream
 
 from parameters import countries, tags
-from process_tweet import hash, procesa_texto, procesa_tuit, user_men, web_men
 
 
-def upload_s3(df, fn):
+def upload_s3(json_tuits):
+    now = datetime.now()
+
+    year = now.strftime("%Y")
+    month = now.strftime("%m")
+    day = now.strftime("%d")
+    time = now.strftime("%H%M")
+
+    fn = f"{year}/{month}/{day}/{time}.json"
 
     bucket = "twitter-project-daromi"
-    csv_buffer = StringIO()
-    df.to_csv(csv_buffer, index=False)
     s3_resource = boto3.resource("s3")
-    s3_resource.Object(bucket, "data/streamed/" + fn).put(Body=csv_buffer.getvalue())
-
+    s3_resource.Object(bucket, "data/p.expectativas/streamed/" + fn).put(Body=bytes(json_tuits))
+    logger.info(f"Tweets Guardados. Nombre del archivo: {fn}")
 
 class Listener(Stream):
     def on_data(self, data):
         global tuits
-        fields = [""] * 16
 
         json_map = json.loads(data)
 
-        try:
-            fields[0] = str(json_map["created_at"])
-        except:
-            pass
-        try:
-            fields[1] = str(json_map["in_reply_to_status_id"])
-        except:
-            pass
-        try:
-            fields[2] = str(json_map["id_str"])
-        except:
-            pass
-        try:
-            fields[3] = str(hash(json_map["entities"]["hashtags"]))
-        except:
-            pass
-        try:
-            fields[4] = str(
-                procesa_texto(json_map["entities"]["user_mentions"][0]["name"])
-            )
-        except:
-            pass
-        try:
-            fields[5] = str(json_map["entities"]["user_mentions"][0]["id"])
-        except:
-            pass
-        try:
-            fields[6] = str(json_map["retweet_count"])
-        except:
-            pass
-        try:
-            fields[7] = str(json_map["user"]["followers_count"])
-        except:
-            pass
-        try:
-            fields[8] = str(json_map["user"]["friends_count"])
-        except:
-            pass
-        try:
-            fields[9] = str(json_map["user"]["id"])
-        except:
-            pass
-        try:
-            fields[10] = procesa_texto(json_map["user"]["location"])
-        except:
-            pass
-        try:
-            fields[11] = procesa_tuit(json_map["extended_tweet"]["full_text"])
-            fields[12] = user_men(json_map["extended_tweet"]["full_text"])
-            if "rt" in json_map["extended_tweet"]["full_text"].lower():
-                fields[15] = "RT"
-            fields[13] = web_men(json_map["extended_tweet"]["full_text"])
-            fields[14] = None
-        except:
-            fields[11] = procesa_tuit(json_map["text"])
-            fields[12] = user_men(json_map["text"])
-            if "rt" in json_map["text"].lower():
-                fields[15] = "RT"
-            fields[13] = web_men(json_map["text"])
-            fields[14] = None
+        tuits.append(json_map)
 
-        tuits.append(fields)
-        if len(tuits) == 1000:
-            tuits = pd.DataFrame(tuits)
-            fn = "/home/ec2-user/tweet-streamer/tweets" + str(time.time()) + ".csv"
-            upload_s3(tuits, fn)
-            logger.info(f"Tweets Guardados. Nombre del archivo: {fn}")
+    
+        if len(tuits) == 100:
+            json_tuits = json.dumps(tuits)
+            upload_s3(json_tuits)
             tuits = []
 
     def on_error(self, status):
@@ -117,7 +58,8 @@ if __name__ == "__main__":
     )
     logger = logging.getLogger("streamer-process.log")
 
-    logger.info(f"Lanzando aplicación streaming")
+    logger.info(f"Lanzando aplicación streaming. Traking términos: {tags} y países: {countries}")
+
 
     tuits = []
 
