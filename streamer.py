@@ -2,12 +2,8 @@
 import json
 import logging
 from datetime import datetime
-from secrets import (
-    API_ACCESS_TOKEN,
-    API_ACCESS_TOKEN_SECRET,
-    API_CONSUMER_KEY,
-    API_CONSUMER_SECRET,
-)
+from secrets import (API_ACCESS_TOKEN, API_ACCESS_TOKEN_SECRET,
+                     API_CONSUMER_KEY, API_CONSUMER_SECRET)
 
 import boto3
 from tweepy import Stream
@@ -27,8 +23,11 @@ def upload_s3(json_tuits):
 
     bucket = "twitter-project-daromi"
     s3_resource = boto3.resource("s3")
-    s3_resource.Object(bucket, "data/p.expectativas/streamed/" + fn).put(Body=bytes(json_tuits).decode("utf-8"))
+    s3_resource.Object(bucket, "data/p.expectativas/streamed/" + fn).put(
+        Body=bytes(json_tuits.encode("utf-8"))
+    )
     logger.info(f"Tweets Guardados. Nombre del archivo: {fn}")
+
 
 class Listener(Stream):
     def on_data(self, data):
@@ -38,7 +37,6 @@ class Listener(Stream):
 
         tuits.append(json_map)
 
-    
         if len(tuits) == 100:
             json_tuits = json.dumps(tuits)
             upload_s3(json_tuits)
@@ -58,8 +56,9 @@ if __name__ == "__main__":
     )
     logger = logging.getLogger("streamer-process.log")
 
-    logger.info(f"Lanzando aplicación streaming. Traking términos: {tags} y países: {countries}")
-
+    logger.info(
+        f"Lanzando aplicación streaming. Traking términos: {tags} y países: {countries}"
+    )
 
     tuits = []
 
