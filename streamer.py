@@ -37,7 +37,7 @@ class Listener(Stream):
 
         tuits.append(json_map)
 
-        if len(tuits) == 100:
+        if len(tuits) == 1000:
             json_tuits = json.dumps(tuits)
             upload_s3(json_tuits)
             tuits = []
